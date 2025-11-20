@@ -1,0 +1,16 @@
+# Ignorer les fichiers de logs
+*.log
+
+# Ignorer les fichiers temporaires IDE
+*.swp
+*.sublime-workspace
+*.sublime-project
+.vscode/
+.idea/
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db
+
+# Ignorer les fichiers d'environnement
+.env

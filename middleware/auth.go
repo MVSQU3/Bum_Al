@@ -1,0 +1,47 @@
+package middleware
+
+import (
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+var SECRET = []byte("SECRET_KEY")
+
+func GenerateJWT(email string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": email,
+		"exp":   time.Now().Add(time.Hour * 10).Unix(),
+	})
+
+	return token.SignedString(SECRET)
+}
+
+func ValidateJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token, err := c.Cookie("token")
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token manquant"})
+			c.Abort()
+			return
+		}
+
+		tokenString, err := jwt.Parse(token, func(tokenString *jwt.Token) (any, error) {
+			if _, ok := tokenString.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Méthod de signature invalide")
+			}
+			return SECRET, nil
+		})
+
+		if err != nil || !tokenString.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token invalide"})
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
+}
