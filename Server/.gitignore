@@ -1,0 +1,24 @@
+# Binaires compilés
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Dossiers de build
+/bin/
+/build/
+/dist/
+
+# Modules vendored (optionnel)
+vendor/
+
+# IDE & configs locales
+.idea/
+.vscode/
+*.swp
+
+# Env & secrets
+.env
+.env.*
