@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )

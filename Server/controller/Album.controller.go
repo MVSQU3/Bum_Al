@@ -2,8 +2,8 @@ package controller
 
 import (
 	"context"
-	"database/sql"
 	"net/http"
+	"os"
 	"strconv"
 
 	"xxx/models"
@@ -78,10 +78,9 @@ func (ctrl *AlbumController) AddAlbums(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "erreur upload image"})
 			return
 		}
-		album.Cover_url = sql.NullString{
-			String: coverURL,
-			Valid:  false,
-		}
+		album.Cover_url = coverURL
+		defer os.Remove(filePath)
+
 	}
 
 	createdAlbum, err := ctrl.repo.Add(&album)
@@ -128,14 +127,7 @@ func (ctrl *AlbumController) UpdateAlbums(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "erreur upload image"})
 			return
 		}
-		album.Cover_url = sql.NullString{
-			String: coverURL,
-			Valid:  true,
-		}
-	} else {
-		album.Cover_url = sql.NullString{
-			Valid: false,
-		}
+		album.Cover_url = coverURL
 	}
 
 	updatedAlbum, err := ctrl.repo.Update(id, &album)

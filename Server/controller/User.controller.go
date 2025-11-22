@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"xxx/middleware"
 	"xxx/models"
 	"xxx/repo"
+	"xxx/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -22,34 +22,33 @@ func NewUserController(repo *repo.UserRepository) *UserController {
 }
 
 func (ctrl *UserController) Register(c *gin.Context) {
-    var user models.User
-    if err := c.BindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    // Hash AVANT d'envoyer en DB
-    hash, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-    user.Password = string(hash)
+	// Hash AVANT d'envoyer en DB
+	hash, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(hash)
 
-    // Maintenant seulement on sauvegarde
-    _, err := ctrl.repo.SignUp(&user)
-    if err != nil {
-        c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
-        return
-    }
+	// Maintenant seulement on sauvegarde
+	_, err := ctrl.repo.SignUp(&user)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
 
-    token, err := middleware.GenerateJWT(user.Email)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	token, err := utils.GenerateJWT(user.Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    c.SetCookie("token", token, 3600, "/", "", false, true)
+	c.SetCookie("token", token, 3600, "/", "", false, true)
 
-    c.JSON(http.StatusCreated, gin.H{"message": "Inscription réussie", "token": token})
+	c.JSON(http.StatusCreated, gin.H{"message": "Inscription réussie", "token": token})
 }
-
 
 func (ctrl *UserController) Login(c *gin.Context) {
 	var input models.Input
@@ -72,15 +71,14 @@ func (ctrl *UserController) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := middleware.GenerateJWT(input.Email)
+	token, err := utils.GenerateJWT(input.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.SetCookie("token", token, 3600, "/", "", false, true)
-
-	c.JSON(http.StatusOK, gin.H{"message": "Connexion réussie", "token": token})
+	c.JSON(http.StatusOK, gin.H{"message": "Connexion réussie", "success": true})
 }
 
 func (ctrl *UserController) Logout(c *gin.Context) {
