@@ -47,7 +47,7 @@ func (ctrl *UserController) Register(c *gin.Context) {
 
 	c.SetCookie("token", token, 3600, "/", "", false, true)
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Inscription réussie", "token": token})
+	c.JSON(http.StatusCreated, gin.H{"message": "Inscription réussie", "user": user.Email})
 }
 
 func (ctrl *UserController) Login(c *gin.Context) {
@@ -78,7 +78,8 @@ func (ctrl *UserController) Login(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, 3600, "/", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"message": "Connexion réussie", "success": true})
+
+	c.JSON(http.StatusOK, gin.H{"message": "Connexion réussie", "user": user.Email})
 }
 
 func (ctrl *UserController) Logout(c *gin.Context) {
@@ -113,13 +114,13 @@ func (ctrl *UserController) CheckAuth(c *gin.Context) {
 		return
 	}
 
-	userExp, _ := c.Get("userExp")
+	// userExp, _ := c.Get("userExp")
 
 	c.JSON(http.StatusOK, gin.H{
 		"authenticated": true,
 		"user": gin.H{
 			"email": userEmail,
-			"exp":   userExp,
+			// "exp":   userExp,
 		},
 		"message": "Authentifié avec succès",
 	})

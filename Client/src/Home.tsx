@@ -71,9 +71,14 @@ const Home = () => {
                     Mettre à jour
                   </Link>
                   <button
-                    type="submit"
+                    type="button"
                     className="btn btn-error btn-sm"
-                    onClick={() => deleteAlbum(a.id)}
+                    onClick={() => {
+                      const ok = window.confirm(
+                        `Supprimer l'album "${a.title}" ? Cette action est irréversible.`
+                      );
+                      if (ok) deleteAlbum(a.id);
+                    }}
                   >
                     Supprimer
                   </button>

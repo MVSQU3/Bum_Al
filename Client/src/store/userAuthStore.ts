@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { api } from "../lib/utils";
 import toast from "react-hot-toast";
-import { Navigate, useNavigate } from "react-router-dom";
 
 interface userData {
   email: string;
@@ -24,15 +23,22 @@ interface LoginData {
   password: string;
 }
 
+export interface RegisterData {
+  fullName: string;
+  email: string;
+  password: string;
+}
+
 interface AuthState {
   authUser: userData | null;
   isLoading: boolean;
   checkAuth: () => Promise<void>;
-  login: (data: LoginData) => Promise<MessageResponse | undefined>;
+  login: (data: LoginData) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set,) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
   isLoading: false,
   checkAuth: async () => {
@@ -51,13 +57,26 @@ export const useAuthStore = create<AuthState>((set,) => ({
   login: async (data) => {
     set({ isLoading: true });
     try {
-      const res = await api.post<MessageResponse>("/login", data);
+      const res = await api.post<AuthResponse>("/login", data);
       console.log("log de login store", res.data);
-      set({ isLoading: true });
+      set({ authUser: res.data.user, isLoading: true });
       toast.success("Bon retour parmi nous!🎉");
-      return res.data;
     } catch (error) {
       console.error("Error in login :", error);
+      set({ authUser: null });
+      toast.error("Mot de passe ou email incorrect");
+    }
+  },
+
+  register: async (data) => {
+    set({ isLoading: true });
+    try {
+      const res = await api.post<AuthResponse>("/register", data);
+      console.log("log de register store", res.data);
+      set({ authUser: res.data.user, isLoading: false });
+      toast.success("Bienvenu parmi nous!🎉");
+    } catch (error) {
+      console.error("Error in register :", error);
       set({ authUser: null });
       toast.error("Mot de passe ou email incorrect");
     }

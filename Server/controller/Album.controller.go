@@ -136,7 +136,7 @@ func (ctrl *AlbumController) UpdateAlbums(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedAlbum)
+	c.JSON(http.StatusOK, gin.H{"update": updatedAlbum, "success": true})
 
 }
 

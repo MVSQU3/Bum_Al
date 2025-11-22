@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useAuthStore } from "./store/userAuthStore";
+import { useAuthStore, type RegisterData } from "./store/userAuthStore";
 import { Link } from "react-router-dom";
 
-const Login = () => {
-  const { login } = useAuthStore();
-  const [formData, setFormData] = useState({
+const Register = () => {
+  const { register } = useAuthStore();
+  const [formData, setFormData] = useState<RegisterData>({
+    fullName: "",
     email: "",
     password: "",
   });
@@ -18,7 +19,7 @@ const Login = () => {
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    login(formData);
+    register(formData);
   };
 
   return (
@@ -26,7 +27,7 @@ const Login = () => {
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Login now!</h1>
+            <h1 className="text-5xl font-bold">Sign Up now!</h1>
             <p className="py-6">
               Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
@@ -37,6 +38,15 @@ const Login = () => {
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
               <div className="card-body">
                 <fieldset className="fieldset">
+                  <label className="label">Email</label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName || ""}
+                    onChange={handleChange}
+                    className="input"
+                    placeholder="Full name"
+                  />
                   <label className="label">Email</label>
                   <input
                     type="email"
@@ -61,8 +71,8 @@ const Login = () => {
                     </Link>
                   </div>
                   <div>
-                    <Link className="link link-hover" to={"/register"}>
-                      Vous avez pas de compte ? Inscrivez vous
+                    <Link className="link link-hover" to={"/login"}>
+                      Vous avez un compte ? Connectez vous
                     </Link>
                   </div>
                   <button className="btn btn-neutral mt-4" type="submit">
@@ -78,4 +88,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
