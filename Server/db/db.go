@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+
+	_ "github.com/lib/pq"
 )
 
 func InitDb() *sql.DB {
-	connStr := "user=postgres password=postgres dbname=album_db sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Erreur ouverture DB", err)
 	}

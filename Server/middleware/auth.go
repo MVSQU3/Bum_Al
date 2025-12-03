@@ -3,12 +3,13 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var SECRET = []byte("SECRET_KEY")
+// var SECRET = []byte("SECRET_KEY")
 
 func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -23,7 +24,7 @@ func ValidateJWT() gin.HandlerFunc {
 			if _, ok := tokenString.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Méthode de signature invalide")
 			}
-			return SECRET, nil
+			return os.Getenv("JWT_SECRET"), nil
 		})
 		if err != nil || !tokenString.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token invalide"})

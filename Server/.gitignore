@@ -22,3 +22,4 @@ vendor/
 # Env & secrets
 .env
 .env.*
+.sql

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { api } from "../lib/utils";
 import type { MessageResponse } from "./userAuthStore";
-import toast from "react-hot-toast";
 
 export interface AlbumData {
   id: number;

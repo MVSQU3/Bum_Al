@@ -38,7 +38,7 @@ const Register = () => {
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
               <div className="card-body">
                 <fieldset className="fieldset">
-                  <label className="label">Email</label>
+                  <label className="label">Full name</label>
                   <input
                     type="text"
                     name="fullName"
